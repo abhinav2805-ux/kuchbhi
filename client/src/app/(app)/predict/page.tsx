@@ -50,7 +50,7 @@ function Predict() {
   return (
     <div className=''>
       <div className='justify-center px-10 py-20 flex  items-center flex-col'>
-        <h1 className='text-3xl font-semibold'>Image Analysis Of Forest / Tree</h1>
+        <h1 className='text-4xl font-semibold'>Image Analysis Of Forest / Tree</h1>
         <h3 className='font-semibold text-slate-500 mt-4'>Choose any one of following features mentioned below</h3>
         <div className='space-x-4 mt-6'>
           <Button variant={'outline'} onClick={() => handleButtonClick('Tree Count')}>Tree Count</Button>
