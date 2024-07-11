@@ -46,7 +46,9 @@ const MapComponent: React.FC = () => {
                 currentRectangle = event.overlay as google.maps.Rectangle;
 
                 const bounds = currentRectangle.getBounds();
-                if (!bounds) return;
+                if (!bounds) {
+                    return;
+                }
 
                 console.log('Captured Bounds:', bounds);
 
