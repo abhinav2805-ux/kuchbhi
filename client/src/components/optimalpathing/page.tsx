@@ -1,25 +1,23 @@
-
-import { useState } from 'react';
+/* eslint-disable @next/next/no-img-element */
+"use client";
+import React, { useState } from 'react';
+import { Button } from '../ui/button';
+import { Separator } from '../ui/separator';
 
 const OptimalPathing: React.FC = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
-  const [greenCoverPercentage, setGreenCoverPercentage] = useState<string>('');
-  const [idleLandPercentage, setIdleLandPercentage] = useState<string>('');
+  const [greenCoverPercentage, setGreenCoverPercentage] = useState<string | null>(null);
+  const [idleLandPercentage, setIdleLandPercentage] = useState<string | null>(null);
 
   const processImage = (file: File) => {
     const reader = new FileReader();
-
     reader.onloadend = () => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        if (!ctx) {
-          return;
-        }
-
+        const ctx = canvas.getContext('2d')!;
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
@@ -27,7 +25,6 @@ const OptimalPathing: React.FC = () => {
         let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         let blackPixelCount = 0;
 
-        // Calculate the mean green value
         let totalGreen = 0;
         for (let i = 1; i < imageData.data.length; i += 4) {
           totalGreen += imageData.data[i];
@@ -35,7 +32,7 @@ const OptimalPathing: React.FC = () => {
         const meanGreen = totalGreen / (imageData.data.length / 4);
 
         for (let i = 0; i < imageData.data.length; i += 4) {
-          let gray = imageData.data[i + 1] * 0.587; // Keep only green channel
+          let gray = (imageData.data[i + 1]) * 0.587;
 
           if (gray < meanGreen / 1.5) {
             gray = 0;
@@ -44,104 +41,93 @@ const OptimalPathing: React.FC = () => {
             gray = 255;
           }
 
-          imageData.data[i] = gray;   // Red channel
-          imageData.data[i + 1] = gray; // Green channel
-          imageData.data[i + 2] = gray; // Blue channel
-          imageData.data[i + 3] = 255;  // Alpha channel
+          imageData.data[i] = gray;
+          imageData.data[i + 1] = gray;
+          imageData.data[i + 2] = gray;
+          imageData.data[i + 3] = 255;
         }
 
         ctx.putImageData(imageData, 0, 0);
 
-        // Display the processed image and green cover percentage
         setProcessedImage(canvas.toDataURL());
         const greenCover = ((blackPixelCount / (canvas.width * canvas.height)) * 100).toFixed(2) + '%';
-        const idleLand = (100 - ((blackPixelCount / (canvas.width * canvas.height)) * 100)).toFixed(2) + '%';
         setGreenCoverPercentage(greenCover);
+        const idleLand = (100 - (blackPixelCount / (canvas.width * canvas.height) * 100)).toFixed(2) + '%';
         setIdleLandPercentage(idleLand);
       };
       img.src = reader.result as string;
-
-      // Display the uploaded image
       setUploadedImage(reader.result as string);
     };
-
     reader.readAsDataURL(file);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      processImage(file);
+  const reset = () => {
+    setUploadedImage(null);
+    setSelectedFile(null);
+    setProcessedImage(null);
+    setGreenCoverPercentage(null);
+    setIdleLandPercentage(null);
+    const fileInput = document.getElementById('image-file') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
     }
   };
 
   return (
-    <div>
-      <center>
-        <h2>Optimal Pathing</h2>
-
-        <input type="file" id="image-file" accept="image/*" onChange={handleFileChange} />
-        <button onClick={() => handleFileChange}>Process Image</button>
-      </center>
-
-      <h3>Processed Image:</h3>
-      <div className="image-container">
-        {uploadedImage && <img id="uploaded-image" src={uploadedImage} alt="Uploaded Image" />}
-        {processedImage && <img id="processed-image" src={processedImage} alt="Processed Image" />}
+    <div className=" w-full min-h-screen flex flex-col py-2">
+      <h2 className="text-3xl font-semibold text-center mb-6">Optimal Pathing</h2>
+      <div className='flex flex-col items-center'>
+        <input
+          placeholder=''
+          type="file"
+          accept="image/*"
+          className="mb-4 border-2 px-2 py-1 rounded-xl"
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              setSelectedFile(e.target.files[0]);
+              setUploadedImage(URL.createObjectURL(e.target.files[0]));
+              setProcessedImage(null); // Reset the processed image when a new file is selected
+            }
+          }}
+        />
+        <Button
+          className="py-2 px-6 rounded-lg w-fit text-xl text-black"
+          onClick={() => {
+            if (selectedFile) {
+              processImage(selectedFile);
+            }
+          }}
+          variant={'outline'}
+        >
+          Process Image
+        </Button>
       </div>
-
-      <h4>Green Cover Percentage: <span id="green-cover-percentage">{greenCoverPercentage}</span></h4>
-      <h4>Idle Land Percentage: <span id="idle-land-percentage">{idleLandPercentage}</span></h4>
-
-      <style jsx>{`
-        body {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 0;
-          background-color: #f4f4f4;
-        }
-
-        h2, h3 {
-          color: #333;
-          padding: 20px;
-        }
-
-        h3 {
-          display: flex;
-          align-items: center;
-        }
-
-        input[type="file"] {
-          display: block;
-          margin: 20px;
-        }
-
-        button {
-          background-color: #4CAF50;
-          border: none;
-          color: white;
-          padding: 15px 32px;
-          text-align: center;
-          text-decoration: none;
-          display: inline-block;
-          font-size: 16px;
-        }
-
-        .image-container {
-          display: flex;
-          justify-content: space-around;
-        }
-
-        .image-container img {
-          max-width: calc(50% - 40px);
-        }
-
-        #green-cover-percentage, #idle-land-percentage {
-          font-size: 24px;
-        }
-      `}</style>
+      <h3 className="text-2xl font-semibold mt-10 px-4">Processed Image:</h3>
+      <div className="flex justify-around mt-6 w-full max-w-4xl px-4 space-x-16 ">
+        {uploadedImage && <img src={uploadedImage} alt="Uploaded Image" className="max-w-2xl" />}
+        {processedImage && <img src={processedImage} alt="Processed Image" className="max-w-2xl" />}
+      </div>
+      <Separator className='my-6'/>
+      <div className='flex flex-col'>
+      <h2 className='text-center font-semibold text-2xl'>Results</h2>
+      <div className='flex flex-row justify-between items-center'>
+      <div>
+      <h4 className="text-xl font-semibold mt-2">Green Cover Percentage: <span>{greenCoverPercentage}</span></h4>
+      <h4 className="text-xl font-semibold mt-2">Idle Land Percentage: <span>{idleLandPercentage}</span></h4>
+      </div>
+      <Button
+        className="py-2 px-6 rounded-lg w-fit text-xl text-black"
+        onClick={reset}
+        variant={'outline'}
+        >
+      Reset
+      </Button>
+      </div>
+      
+      </div>
     </div>
   );
 };
 
 export default OptimalPathing;
+

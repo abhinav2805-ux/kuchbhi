@@ -1,75 +1,45 @@
-// components/WeatherApp.tsx
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Chart from 'chart.js/auto';
+import { Button } from '../ui/button';
 
-const HistoricalData: React.FC = () => {
+const WeatherApp: React.FC = () => {
   const [location, setLocation] = useState('');
   const [currentWeather, setCurrentWeather] = useState<any>(null);
-  const [historicalData, setHistoricalData] = useState<any[]>([]);
   const [showWeather, setShowWeather] = useState(false);
 
-  const getWeatherData = async () => {
-    // Replace these with actual API calls
-    const currentWeatherData = await fetchCurrentWeather(location);
-    const historicalWeatherData = await fetchHistoricalWeather(location);
+  const getWeather = async () => {
+    if (!location) {
+      alert('Please enter a location.');
+      return;
+    }
 
-    setCurrentWeather(currentWeatherData);
-    setHistoricalData(historicalWeatherData);
-    setShowWeather(true);
+    try {
+      const currentWeatherResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=6557810176c36fac5f0db536711a6c52&units=metric`
+      );
+      const currentWeatherData = await currentWeatherResponse.json();
 
-    renderChart(historicalWeatherData);
-  };
+      if (currentWeatherData.cod !== 200) {
+        alert('Error fetching current weather data. Please check the location.');
+        return;
+      }
 
-  const fetchCurrentWeather = async (location: string) => {
-    // Mock data, replace with actual API call
-    return {
-      temperature: '22°C',
-      description: 'Sunny',
-    };
-  };
-
-  const fetchHistoricalWeather = async (location: string) => {
-    // Mock data, replace with actual API call
-    return [
-      { date: '2024-07-01', temperature: 22 },
-      { date: '2024-07-02', temperature: 23 },
-      { date: '2024-07-03', temperature: 21 },
-    ];
-  };
-
-  const renderChart = (data: any[]) => {
-    const ctx = document.getElementById('historical-chart') as HTMLCanvasElement;
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: data.map((item) => item.date),
-        datasets: [
-          {
-            label: 'Temperature',
-            data: data.map((item) => item.temperature),
-            borderColor: 'rgba(50, 205, 50, 1)', // Lime Green
-            backgroundColor: 'rgba(50, 205, 50, 0.2)',
-          },
-        ],
-      },
-    });
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value);
-  };
-
-  const handleButtonClick = () => {
-    getWeatherData();
+      setCurrentWeather(currentWeatherData);
+      setShowWeather(true);
+    } catch (error) {
+      alert('An error occurred while fetching weather data.');
+      console.error(error);
+    }
   };
 
   return (
-    <div>
-      <h1>Weather Data</h1>
+    <div className="p-8 bg-gray-100 min-h-full space-y-4 rounded-xl w-full">
+      <h1 className="text-4xl font-bold text-center text-green-800">Weather Data</h1>
       <form
+        className="my-2 flex flex-col items-center space-y-6 justify-center"
         onSubmit={(e) => {
           e.preventDefault();
-          getWeatherData();
+          getWeather();
         }}
       >
         <input
@@ -77,73 +47,34 @@ const HistoricalData: React.FC = () => {
           id="location"
           placeholder="Enter Location"
           value={location}
-          onChange={handleInputChange}
+          onChange={(e) => setLocation(e.target.value)}
+          className="px-4 border-2 border-black text-lg font-semibold bg-white py-1 rounded-lg "
         />
-        <button type="button" id="get-weather" onClick={handleButtonClick}>
+        <Button
+          type="button"
+          id="get-weather"
+          onClick={getWeather}
+          className="px-3 py-1 shadow-md rounded-xl font-semibold"
+          variant={'outline'}
+        >
           Get Weather
-        </button>
+        </Button>
       </form>
-      {showWeather && (
-        <div id="weather">
-          <h2>Current Weather</h2>
-          <div id="current-weather">
-            <p>Temperature: {currentWeather.temperature}</p>
-            <p>Description: {currentWeather.description}</p>
+      {showWeather && currentWeather && (
+        <div id="weather" className="mt-6 justify-center items-center">
+          <div className='flex flex-col justify-center border-2 px-4 py-2  items-center'>
+          <h2 className="text-2xl font-semibold text-green-800">Current Weather</h2>
+          <div id="current-weather" className="my-4 text-xl font-semibold ">
+            <p>Temperature: {currentWeather.main.temp}°C</p>
+            <p>Humidity: {currentWeather.main.humidity}%</p>
+            <p>Weather: {currentWeather.weather[0].description}</p>
           </div>
-          <h2>Historical Weather</h2>
-          <canvas id="historical-chart"></canvas>
+          </div>
+          
         </div>
       )}
-      <style jsx>{`
-        body {
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4;
-          padding: 20px;
-        }
-
-        h1,
-        h2 {
-          color: #006400; /* Dark Green */
-        }
-
-        form {
-          margin-bottom: 20px;
-        }
-
-        input[type='text'] {
-          padding: 10px;
-          width: 70%;
-          margin-right: 10px;
-        }
-
-        button {
-          padding: 10px;
-          background-color: #32cd32; /* Lime Green */
-          color: white;
-          border: none;
-        }
-
-        button:hover {
-          background-color: #228b22; /* Forest Green */
-        }
-
-        #weather {
-          margin-top: 20px;
-        }
-
-        canvas {
-          width: 100%;
-        }
-
-        /* Responsive styles */
-        @media (max-width: 600px) {
-          input[type='text'] {
-            width: auto;
-          }
-        }
-      `}</style>
     </div>
   );
 };
 
-export default HistoricalData;
+export default WeatherApp;

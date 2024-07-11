@@ -49,15 +49,15 @@ function Predict() {
 
   return (
     <div className=''>
-      <div className='justify-center px-10 py-20 flex  items-center flex-col'>
+      <div className='justify-center px-10 py-20 flex min-h-screen items-center flex-col'>
         <h1 className='text-4xl font-semibold'>Image Analysis Of Forest / Tree</h1>
         <h3 className='font-semibold text-slate-500 mt-4'>Choose any one of following features mentioned below</h3>
         <div className='space-x-4 mt-6'>
-          <Button variant={'outline'} onClick={() => handleButtonClick('Tree Count')}>Tree Count</Button>
-          <Button variant={'outline'} onClick={() => handleButtonClick('Green Cover')}>Green Cover</Button>
-          <Button variant={'outline'} onClick={() => handleButtonClick('Tree Species')}>Tree Species</Button>
-          <Button variant={'outline'} onClick={() => handleButtonClick('Optimal Pathing')}>Optimal Pathing</Button>
-          <Button variant={'outline'} onClick={() => handleButtonClick('Historical Data')}>Historical Data</Button>
+          <Button variant={'outline'} onClick={() => handleButtonClick('Tree Count')} className='shadow-md'>Tree Count</Button>
+          <Button variant={'outline'} onClick={() => handleButtonClick('Green Cover')} className='shadow-md'>Green Cover</Button>
+          <Button variant={'outline'} onClick={() => handleButtonClick('Tree Species')} className='shadow-md'>Tree Species</Button>
+          <Button variant={'outline'} onClick={() => handleButtonClick('Optimal Pathing')} className='shadow-md'>Optimal Pathing</Button>
+          <Button variant={'outline'} onClick={() => handleButtonClick('Historical Data')} className='shadow-md'>Historical Data</Button>
         </div>
         <Separator className='mt-10'/>
         <div className='mt-10 w-full justify-center items-center flex mx-auto'>
