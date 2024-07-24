@@ -1,0 +1,5 @@
+train: ../Dataset/test/images
+val: ../Dataset/valid/images
+
+nc: 1  # number of classes (trees)
+names: ['tree']  # class names
