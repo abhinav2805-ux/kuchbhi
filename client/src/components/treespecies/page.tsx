@@ -1,86 +1,68 @@
 /* eslint-disable @next/next/no-img-element */
 // components/MapComponent.tsx
-import React, { useEffect, useRef, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
-
+import React, { useState } from 'react';
+import { Button } from '../ui/button';
 const MapComponent: React.FC = () => {
-    const mapRef = useRef<HTMLDivElement | null>(null);
-    const [imageSrc, setImageSrc] = useState<string>('');
-    const [locationInfo, setLocationInfo] = useState<{ centerLat: number; centerLng: number; zoom: number } | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [uploadMessage, setUploadMessage] = useState<string>('');
+    const [responseData, setResponseData] = useState<any>(null);
 
-    useEffect(() => {
-        const loader = new Loader({
-            apiKey: 'AIzaSyCpzV2uci8gLyp8si2idL0Gy1PLUe_J8bU', // Replace with your Google Maps API key
-            version: 'weekly',
-            libraries: ['drawing'],
-        });
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            setSelectedFile(event.target.files[0]);
+        }
+    };
 
-        loader.load().then((google) => {
-            if (!mapRef.current) {
-                console.error('Map element not found');
-                return;
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            setUploadMessage('Please select a file first!');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+
+        try {
+            const response = await fetch('http://127.0.0.1:5000/submit', {
+                method: 'POST',
+                body: formData,
+            });
+            
+            
+            if (response.ok) {
+                const result = await response.json();
+                setResponseData(result);
+                setUploadMessage('File uploaded successfully!');
+                console.log(result);
+            } else {
+                const error = await response.json();
+                setUploadMessage(error.error || 'File upload failed!');
             }
-
-            const map = new google.maps.Map(mapRef.current, {
-                center: { lat: 28.690236, lng: 77.288749 }, // Default center (Bhopal)
-                zoom: 12, // Default zoom level
-            });
-
-            let currentRectangle: google.maps.Rectangle | null = null;
-
-            const drawingManager = new google.maps.drawing.DrawingManager({
-                drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
-                drawingControl: true,
-                drawingControlOptions: {
-                    position: google.maps.ControlPosition.TOP_CENTER,
-                    drawingModes: [google.maps.drawing.OverlayType.RECTANGLE],
-                },
-            });
-
-            drawingManager.setMap(map);
-
-            google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event: any) {
-                if (currentRectangle) {
-                    currentRectangle.setMap(null); // Remove the previous rectangle
-                }
-                currentRectangle = event.overlay as google.maps.Rectangle;
-
-                const bounds = currentRectangle.getBounds();
-                if (!bounds) {
-                    return;
-                }
-
-                console.log('Captured Bounds:', bounds);
-
-                const proxyUrl = 'https://gmap-sih-img-proxy.vipulchaturvedi.workers.dev/'; // Replace with your Cloudflare Workers URL
-
-                const imgSrc = `${proxyUrl}?center=${bounds.getCenter().lat()},${bounds.getCenter().lng()}&zoom=15&size=640x640&path=fillcolor:transparent|${bounds.getNorthEast().toUrlValue()}|${bounds.getNorthEast().lat()},${bounds.getSouthWest().lng()}|${bounds.getSouthWest().toUrlValue()}|${bounds.getSouthWest().lat()},${bounds.getNorthEast().lng()}&key=AIzaSyCpzV2uci8gLyp8si2idL0Gy1PLUe_J8bU`;
-
-                setImageSrc(imgSrc);
-
-                setLocationInfo({
-                    centerLat: bounds.getCenter().lat(),
-                    centerLng: bounds.getCenter().lng(),
-                    zoom: 15,
-                });
-            });
-        }).catch(e => {
-            console.error('Error loading Google Maps API:', e);
-        });
-    }, []);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            setUploadMessage('An error occurred while uploading the file.');
+        }
+    };
 
     return (
         <div className="flex flex-col items-center p-10 bg-gray-100 w-full min-h-screen">
-            <h1 className="text-center font-semibold text-3xl mb-8">Draw Your Map Boundary</h1>
-            <div ref={mapRef} className="h-[500px] w-full max-w-[800px] border-2 border-gray-300 rounded-md"></div>
+            <h1 className="text-center font-semibold text-3xl mb-8">Upload an Image</h1>
             <div className="mt-5 p-5 bg-white border-2 border-gray-300 rounded-md shadow-md w-full max-w-[800px]">
-                <h2 className="text-center font-bold text-2xl">Cropped Image</h2>
-                {imageSrc && <img src={imageSrc} alt="Cropped Image" className="max-w-full h-auto mt-2 justify-center items-center" crossOrigin="anonymous" />}
-                {locationInfo && (
-                    <div className="mt-5 text-center">
-                        <p className="text-xl font-semibold">Center Latitude: {locationInfo.centerLat}</p>
-                        <p className="text-xl font-semibold">Center Longitude: {locationInfo.centerLng}</p>
-                        <p className="text-xl font-semibold">Zoom Level: {locationInfo.zoom}</p>
+                <div className="mt-5 text-center">
+                    <input type="file" onChange={handleFileChange} className="mb-3" />
+                    <Button variant={'outline'} onClick={handleUpload} className="px-4 py-2 bg-blue-500 text-white rounded-md">Upload Image</Button>
+                </div>
+                {uploadMessage && <p className="mt-3 text-center font-semibold">{uploadMessage}</p>}
+                {responseData && (
+                    <div className="mt-5">
+                        <h2 className="text-xl font-bold">{responseData.title}</h2>
+                        <p>{responseData.desc}</p>
+                        <p><strong>Prevention Steps:</strong> {responseData.prevent}</p>
+                        <img src={responseData.image_url} alt="Disease Image" className="max-w-full h-auto mt-2" />
+                        <h3 className="text-lg font-semibold mt-4">Recommended Supplement</h3>
+                        <p>{responseData.sname}</p>
+                        <img src={responseData.simage} alt="Supplement Image" className="max-w-full h-auto mt-2" />
+                        <a href={responseData.buy_link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline mt-2 inline-block">Buy Here</a>
                     </div>
                 )}
             </div>
