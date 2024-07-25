@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
+
+interface Prediction {
+  xmin: number;
+  xmax: number;
+  ymin: number;
+  ymax: number;
+}
+
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [predictions, setPredictions] = useState<any[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [treeCount, setTreeCount] = useState<number>(0);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,19 +48,19 @@ export default function Home() {
     }
   };
 
-  const distance = (point1, point2) => {
+  const distance = (point1: [number, number], point2: [number, number]) => {
     return Math.sqrt(
       Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2)
     );
   };
 
-  const clusterPredictions = (predictions) => {
+  const clusterPredictions = (predictions: Prediction[]) => {
     const points = predictions.map((pred) => [
       (pred.xmin + pred.xmax) / 2,
       (pred.ymin + pred.ymax) / 2,
-    ]);
+    ] as [number, number]);
 
-    const clusters = [];
+    const clusters: [number, number][][] = [];
     const threshold = 50; // Adjust this threshold as needed
 
     points.forEach((point, index) => {
@@ -110,27 +118,35 @@ export default function Home() {
   return (
     <div>
       <div className='flex flex-col justify-center items-center space-y-4'>
-          <h1 className='font-semibold text-center text-3xl '>Tree Detection</h1>
-              <input 
-                  placeholder=''
-                  type="file"
-                  accept="image/*"
-                  className="mb-4 border-2 px-2 py-1 rounded-xl" onChange={handleImageChange} />
-          <Button onClick={handleUpload} disabled={!file} className='py-2 px-6 rounded-lg w-fit text-xl text-black' variant={'outline'}>Process Image</Button>
+        <h1 className='font-semibold text-center text-3xl '>Tree Detection</h1>
+        <input
+          placeholder=''
+          type="file"
+          accept="image/*"
+          className="mb-4 border-2 px-2 py-1 rounded-xl"
+          onChange={handleImageChange}
+        />
+        <Button
+          onClick={handleUpload}
+          disabled={!file}
+          className='py-2 px-6 rounded-lg w-fit text-xl text-black'
+          variant={'outline'}
+        >
+          Process Image
+        </Button>
       </div>
-      
+
       <div className='flex gap-4  items-center'>
         {imageUrl && (
           <div className='w-[50%]'>
             <h2 className='font-semibold text-xl'>Selected Image:</h2>
-            <img src={imageUrl} alt="Selected"  className='border-2 shadow-md border-spacing-2'/>
+            <img src={imageUrl} alt="Selected" className='border-2 shadow-md border-spacing-2' />
           </div>
         )}
-        {predictions?predictions.length > 0 && (
+        {predictions.length > 0 && (
           <div className='w-[50%]'>
             <h2 className='font-semibold text-xl'>Processed Image:</h2>
             <canvas id="canvas" />
-
           </div>
         )}
       </div>

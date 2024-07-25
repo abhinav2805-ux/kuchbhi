@@ -47,10 +47,14 @@ const MapComponent: React.FC = () => {
     return (
         <div className="flex flex-col items-center p-10 bg-gray-100 w-full min-h-screen">
             <h1 className="text-center font-semibold text-3xl mb-8">Upload an Image</h1>
+            <p className='font-semibold text-black'>Please upload the image of suffering plant&apos;s leaf for diseases detection.</p>
             <div className="mt-5 p-5 bg-white border-2 border-gray-300 rounded-md shadow-md w-full max-w-[800px]">
-                <div className="mt-5 text-center">
-                    <input type="file" onChange={handleFileChange} className="mb-3" />
-                    <Button variant={'outline'} onClick={handleUpload} className="px-4 py-2 bg-blue-500 text-white rounded-md">Upload Image</Button>
+                <div className="mt-5 text-center flex flex-col justify-center items-center">
+                    <input placeholder=''
+          type="file"
+          accept="image/*"
+          className="mb-4 border-2 px-2 py-1 rounded-xl" onChange={handleFileChange}/>
+                    <Button variant={'outline'} onClick={handleUpload} className="py-2 px-6 rounded-lg w-fit text-xl text-black">Upload Image</Button>
                 </div>
                 {uploadMessage && <p className="mt-3 text-center font-semibold">{uploadMessage}</p>}
                 {responseData && (
