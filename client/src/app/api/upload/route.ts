@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { IncomingForm } from 'formidable';
 import fs from 'fs';
-import fetch from 'node-fetch';
+
 import FormData from 'form-data';
 import path, { parse } from "path";
 import { writeFile } from "fs/promises";
