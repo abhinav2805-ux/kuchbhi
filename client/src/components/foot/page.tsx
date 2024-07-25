@@ -11,8 +11,8 @@ function Footer() {
             <p className="text-gray-600 font-semibold">Made with &#9829; by <a href="https://github.com/abhinav2805-ux/kuchbhi" className="text-blue-500 " title="Meet Our Team">Our Team</a>.</p>
             <div className="space-x-6 flex">
             <a href="mailto:anshjain9159@gmail.com" className=""><Mail/></a>
-            <a href=""><Github/></a>
-            <a href="/" className="font-semibold ">T/C</a>
+            <a href="https://github.com/abhinav2805-ux/kuchbhi" target='_blank' rel='noopener noreferrer'><Github /></a>
+            <a href="/aboutus" className="font-semibold ">T/C</a>
             
             </div>
             </div>
