@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: 'Error making prediction', error: response.statusText }, { status: response.status });
       }
 
-      const rst = await response.json();
+      const rst:any = await response.json();
       console.log(rst)
       return NextResponse.json({
         status: 200,
