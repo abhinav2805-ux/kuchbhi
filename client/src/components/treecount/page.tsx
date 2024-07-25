@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-
+import { Button } from '../ui/button';
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -109,20 +109,28 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Tree Detection</h1>
-      <input type="file" onChange={handleImageChange} />
-      <button onClick={handleUpload} disabled={!file} className='bg-black text-white p-2 rounded-lg m-3'>Process Image</button>
-      <div className='flex justify-around'>
+      <div className='flex flex-col justify-center items-center space-y-4'>
+          <h1 className='font-semibold text-center text-3xl '>Tree Detection</h1>
+              <input 
+                  placeholder=''
+                  type="file"
+                  accept="image/*"
+                  className="mb-4 border-2 px-2 py-1 rounded-xl" onChange={handleImageChange} />
+          <Button onClick={handleUpload} disabled={!file} className='py-2 px-6 rounded-lg w-fit text-xl text-black' variant={'outline'}>Process Image</Button>
+      </div>
+      
+      <div className='flex gap-4  items-center'>
         {imageUrl && (
-          <div>
-            <h2>Selected Image:</h2>
-            <img src={imageUrl} alt="Selected" className='h-[400px] w-[400px]' />
+          <div className='w-[50%]'>
+            <h2 className='font-semibold text-xl'>Selected Image:</h2>
+            <img src={imageUrl} alt="Selected"  className='border-2 shadow-md border-spacing-2'/>
           </div>
         )}
-        {predictions && predictions.length > 0 && (
-          <div>
-            <h2>Processed Image:</h2>
-            <canvas id="canvas" className='h-[400px] w-[400px]' />
+        {predictions?predictions.length > 0 && (
+          <div className='w-[50%]'>
+            <h2 className='font-semibold text-xl'>Processed Image:</h2>
+            <canvas id="canvas" />
+
           </div>
         )}
       </div>
