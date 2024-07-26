@@ -136,23 +136,23 @@ export default function Home() {
         </Button>
       </div>
 
-      <div className='flex gap-4  items-center'>
+      <div className='flex gap-2  jusfity-center w-full'>
         {imageUrl && (
           <div className='w-[50%]'>
             <h2 className='font-semibold text-xl'>Selected Image:</h2>
-            <img src={imageUrl} alt="Selected" className='border-2 shadow-md border-spacing-2' />
+            <img src={imageUrl} alt="Selected" className='border-2 shadow-md border-spacing-2 w-[90%]' />
           </div>
         )}
         {predictions.length > 0 && (
           <div className='w-[50%]'>
             <h2 className='font-semibold text-xl'>Processed Image:</h2>
-            <canvas id="canvas" />
+            <canvas id="canvas" className='w-[90%]' />
           </div>
         )}
       </div>
       {treeCount > 0 && (
-        <div>
-          <h2>Number of Unique Trees: {treeCount}</h2>
+        <div className='flex justify-center items-center text-center my-3 w-full'>
+          <h2 className='font-semibold text-3xl'>Number of Unique Trees: {treeCount}</h2>
         </div>
       )}
     </div>

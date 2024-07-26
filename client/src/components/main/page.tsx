@@ -31,6 +31,15 @@ function Home() {
               alt="panaromic image"
             />
         </div>
+        <div className='flex flex-col'>
+          <h1 className='text-3xl font-semibold text-center my-4'>Historical Data of Indian Green cover</h1>
+          <div className='flex gap-8'>
+          <iframe width="630" height="460"  src="https://www.globalforestwatch.org/embed/widget/rankedForestTypes/country/IND"></iframe>
+          <iframe width="630" height="460"  src="https://www.globalforestwatch.org/embed/widget/treeCoverDensity/country/IND"></iframe>
+
+          </div>
+        
+        </div>
     </div>
     </div>
   )

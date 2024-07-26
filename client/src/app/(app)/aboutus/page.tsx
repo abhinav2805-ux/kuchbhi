@@ -29,7 +29,7 @@ const AboutUs: React.FC = () => {
             <li><a rel='noopener noreferrer' href="https://github.com/Ashwin1902" target='_blank' className="text-blue-500 hover:underline">Ashwin Bansal</a> - ML Developer (Team Leader)</li>
             <li><a rel='noopener noreferrer' href="https://github.com/AnshJain9159" target='_blank' className="text-blue-500 hover:underline">Ansh Jain</a> - Web Developer</li>
             <li><a rel='noopener noreferrer'href="https://github.com/abhinav2805-ux" target='_blank' className="text-blue-500 hover:underline">Abhinav Gupta</a> - Web Developer</li>
-            <li><a  rel='noopener noreferrer' href="https://github.com/coderkartikeya" target='_blank' className="text-blue-500 hover:underline">Katrtikeya Vats</a> - Deep Learning Expert </li>
+            <li><a  rel='noopener noreferrer' href="https://github.com/coderkartikeya" target='_blank' className="text-blue-500 hover:underline">Kartikeya Vats</a> - Deep Learning Expert </li>
           </ul>
         </div>
 

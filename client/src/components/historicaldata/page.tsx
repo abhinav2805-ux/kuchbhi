@@ -33,7 +33,12 @@ const WeatherApp: React.FC = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-full space-y-4 rounded-xl w-full">
+    <div className="p-8 bg-gray-100 min-h-full space-y-4 rounded-xl w-full flex items-center flex-col">
+      <h1 className='text-5xl font-semibold'>Historical Data </h1>
+      <iframe width="830" height="660"  src="https://www.globalforestwatch.org/embed/widget/treeLossPct/country/IND"></iframe>
+      <iframe width="830" height="660"  src="https://www.globalforestwatch.org/embed/widget/treeLoss/country/IND"></iframe>
+      <iframe width="830" height="660"  src="https://www.globalforestwatch.org/embed/widget/firesAlertsHistorical/country/IND" ></iframe>
+      <iframe width="830" height="660"  src="https://www.globalforestwatch.org/embed/widget/netChange/country/IND"></iframe>
       <h1 className="text-4xl font-bold text-center text-green-800">Weather Data</h1>
       <form
         className="my-2 flex flex-col items-center space-y-6 justify-center"

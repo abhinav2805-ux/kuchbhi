@@ -35,7 +35,7 @@ const OptimalPathing: React.FC = () => {
         let grid = new PF.Grid(canvas.width, canvas.height);
 
         for (let i = 0; i < imageData.data.length; i += 4) {
-          let gray = (imageData.data[i + 1]) * 0.587;
+          let gray = imageData.data[i + 1] * 0.587;
 
           if (gray < meanGreen / 1.5) {
             gray = 0;
@@ -64,11 +64,22 @@ const OptimalPathing: React.FC = () => {
         const finder = new PF.AStarFinder();
         const start = [0, 0]; // Top-left corner
         const end = [canvas.width - 1, canvas.height - 1]; // Bottom-right corner
+
+        if (!grid.isWalkableAt(start[0], start[1])) {
+          console.error("Start point is not walkable.");
+          return;
+        }
+
+        if (!grid.isWalkableAt(end[0], end[1])) {
+          console.error("End point is not walkable.");
+          return;
+        }
+
         const path = finder.findPath(start[0], start[1], end[0], end[1], grid);
 
         if (path.length > 0) {
           ctx.strokeStyle = 'red';
-          ctx.lineWidth = 1; // Adjust line width for better visibility
+          ctx.lineWidth = 2; // Adjust line width for better visibility
           ctx.beginPath();
           ctx.moveTo(path[0][0], path[0][1]);
           for (let i = 1; i < path.length; i++) {
@@ -76,6 +87,8 @@ const OptimalPathing: React.FC = () => {
           }
           ctx.stroke();
           setProcessedImage(canvas.toDataURL());
+        } else {
+          console.error("No path found.");
         }
       };
       img.src = reader.result as string;
