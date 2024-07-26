@@ -36,7 +36,7 @@ function Predict() {
         return <TreeCount/>;
       case 'Green Cover':
         return <GreenCover/>;
-      case 'Tree Species':
+      case 'Tree Disease':
         return <TreeSpecies/>;
       case 'Optimal Pathing':
         return <OptimalPathing/>;
@@ -55,7 +55,7 @@ function Predict() {
         <div className='space-x-4 mt-6'>
           <Button variant={'outline'} onClick={() => handleButtonClick('Tree Count')} className='shadow-md'>Tree Count</Button>
           <Button variant={'outline'} onClick={() => handleButtonClick('Green Cover')} className='shadow-md'>Green Cover</Button>
-          <Button variant={'outline'} onClick={() => handleButtonClick('Tree Species')} className='shadow-md'>Tree Species</Button>
+          <Button variant={'outline'} onClick={() => handleButtonClick('Tree Disease')} className='shadow-md'>Tree Disease</Button>
           <Button variant={'outline'} onClick={() => handleButtonClick('Optimal Pathing')} className='shadow-md'>Optimal Pathing</Button>
           <Button variant={'outline'} onClick={() => handleButtonClick('Historical Data')} className='shadow-md'>Historical Data</Button>
         </div>
